@@ -148,22 +148,29 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+//        textField.frame.
         if textField.text == "TOP" || textField.text == "BOTTOM" {
             textField.text = ""
         }
         return true
     }
     
+    
     //MARK: keyboard events
     func keyboardWillShow(_ notification:Notification) {
-        print("Origin X,Y BEFORE keyboard shows: \(view.frame.origin.x), \(view.frame.origin.y)")
-        
-        view.frame.origin.y -= getKeyboardHeight(notification)
-        print("Origin X,Y AFTER keyboard shows: \(view.frame.origin.x), \(view.frame.origin.y)")
+        if self.view.frame.origin.y == 0{
+            print("Origin X,Y BEFORE keyboard shows: \(view.frame.origin.x), \(view.frame.origin.y)")
+            self.view.frame.origin.y -= getKeyboardHeight(notification)
+            print("Origin X,Y AFTER keyboard shows: \(view.frame.origin.x), \(view.frame.origin.y)")
+        }
     }
     
     func keyboardWillHide(_ notification:Notification) {
-        view.frame.origin.y += getKeyboardHeight(notification)
+        if self.view.frame.origin.y != 0{
+            print("Origin X,Y BEFORE keyboard hides: \(view.frame.origin.x), \(view.frame.origin.y)")
+            self.view.frame.origin.y += getKeyboardHeight(notification)
+            print("Origin X,Y AFTER keyboard hides: \(view.frame.origin.x), \(view.frame.origin.y)")
+        }
     }
     
     func getKeyboardHeight(_ notification:Notification) -> CGFloat {
