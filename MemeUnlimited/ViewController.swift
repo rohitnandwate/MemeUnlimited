@@ -72,6 +72,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func shareMeme(_ sender: Any) {
         let memedImage: UIImage = generateMemedImage()
         let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
+        controller.completionWithItemsHandler = {
+             type, ok, items, err in
+            _ = Meme(orignalImage: self.memeImageView.image!, memedImage: memedImage, topText: self.topTextField.text!, bottomText: self.bottomTextField.text!)
+            self.dismiss(animated: true, completion: nil)
+        }
         self.present(controller, animated: true, completion: nil)
     }
     
