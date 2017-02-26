@@ -10,8 +10,9 @@ import UIKit
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
-    @IBOutlet var memeImageView: UIImageView!
+    // MARK: Outlets
     
+    @IBOutlet var memeImageView: UIImageView!
     @IBOutlet var topToolbar: UIToolbar!
     @IBOutlet var cancelButton: UIBarButtonItem!
     @IBOutlet var shareButton: UIBarButtonItem!
@@ -20,7 +21,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet var bottomTextField: UITextField!    
     @IBOutlet var bottomToolbar: UIToolbar!
     
-    let TOOLBAR_ALPHA: Float = 0.75
+    let TOOLBAR_ALPHA: CGFloat = 0.75
+    
+    // MARK: Viewcontroller functions
     
     override func viewWillAppear(_ animated: Bool) {
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
@@ -37,7 +40,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         topTextField.delegate = self
         bottomTextField.delegate = self
         showHideToolbars(alpha: TOOLBAR_ALPHA)
-        setupTextFields()
     }
     
     // MARK: Image picker
@@ -93,9 +95,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         self.present(controller, animated: true, completion: nil)
     }
     
-    func setShareButtonState() {
-        shareButton.isEnabled = memeImageView.image != nil
-    }
+
     
     // MARK: Bottom toolbar button actions
     
@@ -105,7 +105,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         imagePickerController.sourceType = .camera
         present(imagePickerController, animated: true, completion: nil)
     }
-
+    
     @IBAction func pickImageFromAlbum(_ sender: Any) {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
@@ -113,42 +113,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         present(imagePickerController, animated: true, completion: nil)
     }
 
-    // MARK: Manage views
     
-    func showHideToolbars(alpha :Float) {
-        bottomToolbar.alpha = 0.75
-        topToolbar.alpha = 0.75
-    }
-    
-    func resetTextFields () {
-        topTextField.text = "TOP"
-        bottomTextField.text = "BOTTOM"
-    }
-    
-    func setupTextFields() {
-//        let memeTextAttributes:[String:Any] = [
-//            NSStrokeColorAttributeName: UIColor.black,
-//
-//            NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
-//        
-//        topTextField.defaultTextAttributes = memeTextAttributes
-//        topTextField.textAlignment = .center
-//        topTextField.text = "TOP"
-//        
-//        bottomTextField.defaultTextAttributes = memeTextAttributes
-//        bottomTextField.textAlignment = .center
-//        bottomTextField.text = "BOTTOM"
-    }
-    
-    // MARK: Textfield delegate
-    
+    // MARK: Textfield delegate functions
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-//        textField.frame.
         if textField.text == "TOP" || textField.text == "BOTTOM" {
             textField.text = ""
         }
@@ -158,18 +131,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //MARK: keyboard events
     func keyboardWillShow(_ notification:Notification) {
-        if self.view.frame.origin.y == 0{
-            print("Origin X,Y BEFORE keyboard shows: \(view.frame.origin.x), \(view.frame.origin.y)")
+        if self.view.frame.origin.y == 0 {
             self.view.frame.origin.y -= getKeyboardHeight(notification)
-            print("Origin X,Y AFTER keyboard shows: \(view.frame.origin.x), \(view.frame.origin.y)")
         }
     }
     
     func keyboardWillHide(_ notification:Notification) {
-        if self.view.frame.origin.y != 0{
-            print("Origin X,Y BEFORE keyboard hides: \(view.frame.origin.x), \(view.frame.origin.y)")
+        if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y += getKeyboardHeight(notification)
-            print("Origin X,Y AFTER keyboard hides: \(view.frame.origin.x), \(view.frame.origin.y)")
         }
     }
     
@@ -187,6 +156,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func unsubscribeFromKeyboardEvents() {
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    
+    // MARK: Manage views
+    
+    func showHideToolbars(alpha: CGFloat) {
+        bottomToolbar.alpha = alpha
+        topToolbar.alpha = alpha
+    }
+    
+    func resetTextFields () {
+        topTextField.text = "TOP"
+        bottomTextField.text = "BOTTOM"
+    }
+    
+    func setShareButtonState() {
+        shareButton.isEnabled = memeImageView.image != nil
     }
 }
 

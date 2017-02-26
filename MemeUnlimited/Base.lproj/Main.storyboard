@@ -45,7 +45,11 @@
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
                                     <barButtonItem width="60" style="plain" systemItem="fixedSpace" id="ASV-Gh-PgV"/>
-                                    <barButtonItem style="plain" systemItem="camera" id="1vD-rT-Nzc" userLabel="CameraButtonItem"/>
+                                    <barButtonItem style="plain" systemItem="camera" id="1vD-rT-Nzc" userLabel="CameraButtonItem">
+                                        <connections>
+                                            <action selector="pickImageFromCamera:" destination="BYZ-38-t0r" id="eu9-YN-B68"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="h6w-Nl-LbT"/>
                                     <barButtonItem style="plain" id="AR1-LW-8u7" userLabel="AlbumButtonItem">
                                         <button key="customView" opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="7av-5J-zSQ" userLabel="AlbumButton">
