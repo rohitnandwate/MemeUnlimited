@@ -22,11 +22,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wys-SR-ed0" userLabel="MemeView">
-                                <rect key="frame" x="0.0" y="20" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
                             <toolbar autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.75" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="KiU-e2-lV0" userLabel="TopToolbar">
-                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="55"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="R7j-hX-2PT"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem style="plain" systemItem="action" id="Bi7-0c-F9W" userLabel="ShareButtonItem">
                                         <connections>
@@ -42,7 +45,10 @@
                                 </items>
                             </toolbar>
                             <toolbar autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.75" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Tfr-Zh-fd8" userLabel="BottomToolbar">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="612" width="375" height="55"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="aVa-qg-87r"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem width="60" style="plain" systemItem="fixedSpace" id="ASV-Gh-PgV"/>
                                     <barButtonItem style="plain" systemItem="camera" id="1vD-rT-Nzc" userLabel="CameraButtonItem">
@@ -53,7 +59,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="h6w-Nl-LbT"/>
                                     <barButtonItem style="plain" id="AR1-LW-8u7" userLabel="AlbumButtonItem">
                                         <button key="customView" opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="7av-5J-zSQ" userLabel="AlbumButton">
-                                            <rect key="frame" x="233" y="7" width="66" height="30"/>
+                                            <rect key="frame" x="233" y="13" width="66" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Album"/>
                                             <connections>
@@ -101,19 +107,19 @@
                         <constraints>
                             <constraint firstItem="KiU-e2-lV0" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="3BR-1U-9TV"/>
                             <constraint firstItem="Tfr-Zh-fd8" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="3M6-Sf-IpX"/>
-                            <constraint firstItem="KiU-e2-lV0" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="3Rt-GS-UVy"/>
+                            <constraint firstItem="KiU-e2-lV0" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="3Rt-GS-UVy"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Tfr-Zh-fd8" secondAttribute="bottom" id="4cB-PI-aVd"/>
                             <constraint firstItem="XsV-OA-Yrv" firstAttribute="centerX" secondItem="Wys-SR-ed0" secondAttribute="centerX" id="CUT-br-JKp"/>
                             <constraint firstItem="XsV-OA-Yrv" firstAttribute="width" secondItem="Wys-SR-ed0" secondAttribute="width" id="Dfk-sk-BNs"/>
                             <constraint firstItem="Wys-SR-ed0" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="HIF-Iy-q0t"/>
                             <constraint firstItem="Wys-SR-ed0" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="Ji8-he-EYp"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Ts9-jE-FKc" secondAttribute="bottom" constant="80" id="MEt-bY-7b6"/>
-                            <constraint firstItem="Wys-SR-ed0" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="P2G-1l-N9l"/>
                             <constraint firstItem="Wys-SR-ed0" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="PqE-XZ-XeV"/>
                             <constraint firstItem="Tfr-Zh-fd8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="VkX-FV-tUf"/>
                             <constraint firstItem="Wys-SR-ed0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Wgz-Jn-fuB"/>
                             <constraint firstItem="XsV-OA-Yrv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="60" id="anw-1F-HAu"/>
                             <constraint firstItem="Ts9-jE-FKc" firstAttribute="centerX" secondItem="Wys-SR-ed0" secondAttribute="centerX" id="l7a-Pi-6X1"/>
+                            <constraint firstItem="Wys-SR-ed0" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="lZp-wF-CCC"/>
                             <constraint firstItem="KiU-e2-lV0" firstAttribute="leading" secondItem="XsV-OA-Yrv" secondAttribute="leading" id="vqy-4j-P7Q"/>
                             <constraint firstItem="Ts9-jE-FKc" firstAttribute="width" secondItem="Wys-SR-ed0" secondAttribute="width" id="wqC-GP-nEv"/>
                         </constraints>
