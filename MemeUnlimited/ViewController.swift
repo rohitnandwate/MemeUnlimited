@@ -47,10 +47,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let editedImage = info[UIImagePickerControllerEditedImage] {
             memeImageView.image = editedImage as? UIImage
-            print("Edited")
         } else if let orignalImage = info[UIImagePickerControllerOriginalImage] {
             memeImageView.image = orignalImage as? UIImage
-            print("original")
         }
         setShareButtonState()
         dismiss(animated: true, completion: nil)
@@ -74,24 +72,34 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
         controller.completionWithItemsHandler = {
              type, ok, items, err in
-            _ = Meme(orignalImage: self.memeImageView.image!, memedImage: memedImage, topText: self.topTextField.text!, bottomText: self.bottomTextField.text!)
+            _ = Meme(orignalImage: self.memeImageView.image!,
+                     memedImage: memedImage,
+                     topText: self.topTextField.text!,
+                     bottomText: self.bottomTextField.text!)
             self.dismiss(animated: true, completion: nil)
         }
         self.present(controller, animated: true, completion: nil)
     }
     
     @IBAction func cancelMeme(_ sender: Any) {
-        let controller = UIAlertController(title: "Clear Current Meme", message: "Clear the meme editor", preferredStyle: .alert)
-        controller.message = "This will clear all the current changes"
+        let controller = UIAlertController(title: StringConstants.ALERT_CLEAR_MEME_TITLE,
+                                           message: StringConstants.ALERT_CLEAR_MEME_MSG,
+                                           preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: "Clear", style: UIAlertActionStyle.destructive) {
+        let okAction = UIAlertAction(title: StringConstants.ALERT_CLEAR_BUTTON, style: UIAlertActionStyle.destructive) {
             action in
                 self.memeImageView.image = nil
                 self.resetTextFields()
                 self.setShareButtonState()
+                if self.topTextField.isEditing {
+                    self.topTextField.resignFirstResponder()
+                }
+                if self.bottomTextField.isEditing {
+                    self.bottomTextField.resignFirstResponder()
+                }
                 self.dismiss(animated: true, completion: nil)
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) {
+        let cancelAction = UIAlertAction(title: StringConstants.ALERT_CANCEL_BUTTON, style: UIAlertActionStyle.cancel) {
             action in self.dismiss(animated: true, completion: nil)
         }
         
@@ -127,7 +135,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        if textField.text == "TOP" || textField.text == "BOTTOM" {
+        if textField.text == StringConstants.MEME_EDITOR_TOP_TEXT
+            || textField.text == StringConstants.MEME_EDITOR_BOTTOM_TEXT {
             textField.text = ""
         }
         return true
@@ -136,13 +145,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     //MARK: keyboard events
     func keyboardWillShow(_ notification:Notification) {
-        if self.view.frame.origin.y == 0 {
+        if self.bottomTextField.isEditing && self.view.frame.origin.y == 0 {
             self.view.frame.origin.y -= getKeyboardHeight(notification)
         }
     }
     
     func keyboardWillHide(_ notification:Notification) {
-        if self.view.frame.origin.y != 0 {
+        if self.bottomTextField.isEditing && self.view.frame.origin.y != 0 {
             self.view.frame.origin.y += getKeyboardHeight(notification)
         }
     }
@@ -172,8 +181,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func resetTextFields () {
-        topTextField.text = "TOP"
-        bottomTextField.text = "BOTTOM"
+        topTextField.text = StringConstants.MEME_EDITOR_TOP_TEXT
+        bottomTextField.text = StringConstants.MEME_EDITOR_BOTTOM_TEXT
     }
     
     func setShareButtonState() {
