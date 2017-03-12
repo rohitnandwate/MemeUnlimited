@@ -21,13 +21,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet var bottomTextField: UITextField!    
     @IBOutlet var bottomToolbar: UIToolbar!
     
+    var memes: [Meme] = []
+    var currentMeme: Meme?
+    
     let TOOLBAR_ALPHA: CGFloat = 0.75
     
     // MARK: Viewcontroller functions
     
     override func viewWillAppear(_ animated: Bool) {
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
-        setShareButtonState()
+        updateShareButtonState()
         subscribeToKeyboardEvents()
         
     }
@@ -39,7 +42,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         topTextField.delegate = self
         bottomTextField.delegate = self
+        if let meme = currentMeme {
+            setupTextFields(top:meme.topText, bottom:meme.bottomText)
+            memeImageView.image = meme.orignalImage
+        }
         showHideToolbars(alpha: TOOLBAR_ALPHA)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+        super.touchesBegan(touches, with: event)
     }
     
     // MARK: Image picker
@@ -50,7 +62,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         } else if let orignalImage = info[UIImagePickerControllerOriginalImage] {
             memeImageView.image = orignalImage as? UIImage
         }
-        setShareButtonState()
+        updateShareButtonState()
         dismiss(animated: true, completion: nil)
     }
     
@@ -59,45 +71,64 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func generateMemedImage() -> UIImage {
         showHideToolbars(alpha: 0.0)
         // Render view to an image
-        UIGraphicsBeginImageContext(self.view.frame.size)
-        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
+        UIGraphicsBeginImageContext(self.memeImageView.frame.size)
+        view.drawHierarchy(in: self.memeImageView.frame, afterScreenUpdates: true)
         let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         showHideToolbars(alpha: TOOLBAR_ALPHA)
         return memedImage
     }
+    @IBAction func saveMeme(_ sender: Any) {
+        view.endEditing(true)
+        let controller = UIAlertController(title: StringConstants.ALERT_SAVE_MEME_TITLE,
+                                           message: StringConstants.ALERT_SAVE_MEME_MSG,
+                                           preferredStyle: .alert)
+        
+        let saveAction = UIAlertAction(title: StringConstants.ALERT_SAVE_BUTTON, style: UIAlertActionStyle.default) {
+            action in
+            let memedImage: UIImage = self.generateMemedImage()
+            self.memes.append(Meme(orignalImage: self.memeImageView.image,
+                                   memedImage: memedImage,
+                                   topText: self.topTextField.text!,
+                                   bottomText: self.bottomTextField.text!))
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        let cancelAction = UIAlertAction(title: StringConstants.ALERT_CANCEL_BUTTON, style: UIAlertActionStyle.cancel) {
+            action in self.dismiss(animated: true, completion: nil)
+        }
+        
+        controller.addAction(saveAction)
+        controller.addAction(cancelAction)
+        self.present(controller, animated: true, completion: nil)
+    }
     
     @IBAction func shareMeme(_ sender: Any) {
         let memedImage: UIImage = generateMemedImage()
         let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
-        controller.completionWithItemsHandler = {
-             type, ok, items, err in
-            _ = Meme(orignalImage: self.memeImageView.image!,
-                     memedImage: memedImage,
-                     topText: self.topTextField.text!,
-                     bottomText: self.bottomTextField.text!)
-            self.dismiss(animated: true, completion: nil)
-        }
+//        controller.completionWithItemsHandler = {
+//            type, ok, items, err in
+//            self.memes.append(Meme(orignalImage: self.memeImageView.image!,
+//                     memedImage: memedImage,
+//                     topText: self.topTextField.text!,
+//                     bottomText: self.bottomTextField.text!))
+//            self.dismiss(animated: true, completion: nil)
+//        }
         self.present(controller, animated: true, completion: nil)
     }
     
     @IBAction func cancelMeme(_ sender: Any) {
+        view.endEditing(true)
         let controller = UIAlertController(title: StringConstants.ALERT_CLEAR_MEME_TITLE,
                                            message: StringConstants.ALERT_CLEAR_MEME_MSG,
                                            preferredStyle: .alert)
         
         let okAction = UIAlertAction(title: StringConstants.ALERT_CLEAR_BUTTON, style: UIAlertActionStyle.destructive) {
             action in
-                self.memeImageView.image = nil
-                self.resetTextFields()
-                self.setShareButtonState()
-                if self.topTextField.isEditing {
-                    self.topTextField.resignFirstResponder()
-                }
-                if self.bottomTextField.isEditing {
-                    self.bottomTextField.resignFirstResponder()
-                }
-                self.dismiss(animated: true, completion: nil)
+            self.setupTextFields(top:nil, bottom:nil)
+            self.memeImageView.image = nil
+            self.updateShareButtonState()
+            self.dismiss(animated: true, completion: nil)
         }
         let cancelAction = UIAlertAction(title: StringConstants.ALERT_CANCEL_BUTTON, style: UIAlertActionStyle.cancel) {
             action in self.dismiss(animated: true, completion: nil)
@@ -141,8 +172,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         return true
     }
-    
-    
+
     //MARK: keyboard events
     func keyboardWillShow(_ notification:Notification) {
         if self.bottomTextField.isEditing && self.view.frame.origin.y == 0 {
@@ -151,7 +181,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func keyboardWillHide(_ notification:Notification) {
-        if self.bottomTextField.isEditing && self.view.frame.origin.y != 0 {
+        if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y += getKeyboardHeight(notification)
         }
     }
@@ -172,6 +202,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
+    // MARK: Segues
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let savedMemeTableController = segue.destination as! SavedMemeViewController
+        
+        if segue.identifier == "savedMemeSegue" {
+            savedMemeTableController.savedMemes = self.memes
+            savedMemeTableController.datasource = SavedMemeDataSoure(savedMemes: self.memes)
+        }
+    }
     
     // MARK: Manage views
     
@@ -180,12 +220,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         topToolbar.alpha = alpha
     }
     
-    func resetTextFields () {
-        topTextField.text = StringConstants.MEME_EDITOR_TOP_TEXT
-        bottomTextField.text = StringConstants.MEME_EDITOR_BOTTOM_TEXT
+    func setupTextFields (top:String?, bottom:String?) {
+        if let topText = top, let bottomText = bottom {
+            topTextField.text = topText
+            bottomTextField.text = bottomText
+        } else {
+            topTextField.text = StringConstants.MEME_EDITOR_TOP_TEXT
+            bottomTextField.text = StringConstants.MEME_EDITOR_BOTTOM_TEXT
+        }
     }
     
-    func setShareButtonState() {
+    func updateShareButtonState() {
         shareButton.isEnabled = memeImageView.image != nil
     }
 }

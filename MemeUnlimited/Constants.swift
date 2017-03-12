@@ -14,6 +14,10 @@ struct StringConstants {
     static let ALERT_CLEAR_MEME_MSG = "Clear the meme editor?"
     static let ALERT_CANCEL_BUTTON = "Cancel"
     static let ALERT_CLEAR_BUTTON = "Clear"
+
+    static let ALERT_SAVE_MEME_TITLE = "Save Meme"
+    static let ALERT_SAVE_MEME_MSG = "Save current version for later?"
+    static let ALERT_SAVE_BUTTON = "Save"
     
     static let MEME_EDITOR_TOP_TEXT = "TOP"
     static let MEME_EDITOR_BOTTOM_TEXT = "BOTTOM"
