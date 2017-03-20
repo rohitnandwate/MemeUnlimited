@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     // MARK: Outlets
     
@@ -29,6 +29,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: Viewcontroller functions
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         updateShareButtonState()
         subscribeToKeyboardEvents()
@@ -40,11 +41,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         topTextField.delegate = self
         bottomTextField.delegate = self
         if let meme = currentMeme {
             setupTextFields(top:meme.topText, bottom:meme.bottomText)
             memeImageView.image = meme.orignalImage
+        } else {
+            setupTextFields(top: nil, bottom: nil)
         }
         showHideToolbars(alpha: TOOLBAR_ALPHA)
     }
@@ -100,21 +104,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         controller.addAction(saveAction)
         controller.addAction(cancelAction)
-        self.present(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
     
     @IBAction func shareMeme(_ sender: Any) {
         let memedImage: UIImage = generateMemedImage()
         let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
-//        controller.completionWithItemsHandler = {
-//            type, ok, items, err in
-//            self.memes.append(Meme(orignalImage: self.memeImageView.image!,
-//                     memedImage: memedImage,
-//                     topText: self.topTextField.text!,
-//                     bottomText: self.bottomTextField.text!))
-//            self.dismiss(animated: true, completion: nil)
-//        }
-        self.present(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
     
     @IBAction func cancelMeme(_ sender: Any) {
@@ -136,7 +132,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         controller.addAction(okAction)
         controller.addAction(cancelAction)
-        self.present(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
     
 
@@ -144,19 +140,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: Bottom toolbar button actions
     
     @IBAction func pickImageFromCamera(_ sender: Any) {
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .camera
-        present(imagePickerController, animated: true, completion: nil)
-    }
+        loadImagePicker(sourceType: .camera)    }
     
     @IBAction func pickImageFromAlbum(_ sender: Any) {
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        present(imagePickerController, animated: true, completion: nil)
+            loadImagePicker(sourceType: .photoLibrary)
     }
 
+    func loadImagePicker(sourceType: UIImagePickerControllerSourceType) {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = sourceType
+        present(imagePickerController, animated: true, completion: nil)
+    }
     
     // MARK: Textfield delegate functions
 
@@ -176,14 +171,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //MARK: keyboard events
     func keyboardWillShow(_ notification:Notification) {
         if self.bottomTextField.isEditing && self.view.frame.origin.y == 0 {
-            self.view.frame.origin.y -= getKeyboardHeight(notification)
+            self.view.frame.origin.y = -getKeyboardHeight(notification)
         }
     }
     
     func keyboardWillHide(_ notification:Notification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y += getKeyboardHeight(notification)
-        }
+        self.view.frame.origin.y = 0
     }
     
     func getKeyboardHeight(_ notification:Notification) -> CGFloat {
@@ -205,6 +198,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: Segues
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         let savedMemeTableController = segue.destination as! SavedMemeViewController
         
         if segue.identifier == "savedMemeSegue" {
@@ -221,6 +215,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func setupTextFields (top:String?, bottom:String?) {
+        topTextField.defaultTextAttributes = Attributes.memeTextAttributes
+        topTextField.textAlignment = .center
+        bottomTextField.defaultTextAttributes = Attributes.memeTextAttributes
+        bottomTextField.textAlignment = .center
         if let topText = top, let bottomText = bottom {
             topTextField.text = topText
             bottomTextField.text = bottomText

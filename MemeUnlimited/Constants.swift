@@ -22,3 +22,19 @@ struct StringConstants {
     static let MEME_EDITOR_TOP_TEXT = "TOP"
     static let MEME_EDITOR_BOTTOM_TEXT = "BOTTOM"
 }
+
+
+struct Attributes {
+    static let memeTextAttributes:[String:Any] = [
+        NSStrokeColorAttributeName: UIColor.black,
+        NSForegroundColorAttributeName: UIColor.white,
+        NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+        NSStrokeWidthAttributeName: -3.0]
+}
+
+struct Meme {
+    let orignalImage: UIImage?
+    let memedImage: UIImage?
+    let topText: String?
+    let bottomText: String?
+}

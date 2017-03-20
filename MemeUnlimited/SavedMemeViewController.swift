@@ -22,11 +22,12 @@ class SavedMemeViewController : UITableViewController {
         self.navigationController?.navigationBar.isHidden = false
     }
     @IBAction func dismiss(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let mainViewController = segue.destination as! ViewController
+        super.prepare(for: segue, sender: sender)
+        let mainViewController = segue.destination as! MemeEditorController
         
         if segue.identifier == "showSelectedMeme" {
             if let cell = sender as? SavedMemeCell {
