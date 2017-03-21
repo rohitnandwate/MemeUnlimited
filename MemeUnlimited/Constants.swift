@@ -21,8 +21,19 @@ struct StringConstants {
     
     static let MEME_EDITOR_TOP_TEXT = "TOP"
     static let MEME_EDITOR_BOTTOM_TEXT = "BOTTOM"
+    static let EMPTY_TEXT = ""
 }
 
+struct Constants {
+    static let TOOLBAR_ALPHA: CGFloat = 0.75
+    static let HIDE_TOOLBAR_ALPHA: CGFloat = 0.0
+    
+    static let FRAME_ORIGIN: CGFloat = 0
+}
+
+struct SegueIds {
+    static let SAVED_MEME = "savedMemeSegue"
+}
 
 struct Attributes {
     static let memeTextAttributes:[String:Any] = [
@@ -32,9 +43,4 @@ struct Attributes {
         NSStrokeWidthAttributeName: -3.0]
 }
 
-struct Meme {
-    let orignalImage: UIImage?
-    let memedImage: UIImage?
-    let topText: String?
-    let bottomText: String?
-}
+

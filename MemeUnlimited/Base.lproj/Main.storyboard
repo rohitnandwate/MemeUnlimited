@@ -207,7 +207,6 @@
                                     <outlet property="bottomLabel" destination="n69-Vu-wuh" id="7m4-vy-Gwi"/>
                                     <outlet property="memeImageView" destination="zsY-5C-Sm6" id="mcD-HT-pmA"/>
                                     <outlet property="topLabel" destination="x8t-2g-cQk" id="z5M-lw-feE"/>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="showSelectedMeme" id="DrE-y0-N5W"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

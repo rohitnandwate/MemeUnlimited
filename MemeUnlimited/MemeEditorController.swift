@@ -24,7 +24,7 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     var memes: [Meme] = []
     var currentMeme: Meme?
     
-    let TOOLBAR_ALPHA: CGFloat = 0.75
+    
     
     // MARK: Viewcontroller functions
     
@@ -42,15 +42,13 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        topTextField.delegate = self
-        bottomTextField.delegate = self
         if let meme = currentMeme {
             setupTextFields(top:meme.topText, bottom:meme.bottomText)
             memeImageView.image = meme.orignalImage
         } else {
             setupTextFields(top: nil, bottom: nil)
         }
-        showHideToolbars(alpha: TOOLBAR_ALPHA)
+        showHideToolbars(alpha: Constants.TOOLBAR_ALPHA)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -73,13 +71,13 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     // MARK: Top toolbar buttons
     
     func generateMemedImage() -> UIImage {
-        showHideToolbars(alpha: 0.0)
+        showHideToolbars(alpha: Constants.HIDE_TOOLBAR_ALPHA)
         // Render view to an image
         UIGraphicsBeginImageContext(self.memeImageView.frame.size)
         view.drawHierarchy(in: self.memeImageView.frame, afterScreenUpdates: true)
         let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        showHideToolbars(alpha: TOOLBAR_ALPHA)
+        showHideToolbars(alpha: Constants.TOOLBAR_ALPHA)
         return memedImage
     }
     @IBAction func saveMeme(_ sender: Any) {
@@ -110,6 +108,16 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func shareMeme(_ sender: Any) {
         let memedImage: UIImage = generateMemedImage()
         let controller = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
+        controller.completionWithItemsHandler = {
+            (_, successful, _, _) in
+            if successful{
+                self.memes.append(Meme(orignalImage: self.memeImageView.image,
+                                       memedImage: memedImage,
+                                       topText: self.topTextField.text!,
+                                       bottomText: self.bottomTextField.text!))
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
         present(controller, animated: true, completion: nil)
     }
     
@@ -163,7 +171,7 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         if textField.text == StringConstants.MEME_EDITOR_TOP_TEXT
             || textField.text == StringConstants.MEME_EDITOR_BOTTOM_TEXT {
-            textField.text = ""
+            textField.text = StringConstants.EMPTY_TEXT
         }
         return true
     }
@@ -176,7 +184,7 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     func keyboardWillHide(_ notification:Notification) {
-        self.view.frame.origin.y = 0
+        self.view.frame.origin.y = Constants.FRAME_ORIGIN
     }
     
     func getKeyboardHeight(_ notification:Notification) -> CGFloat {
@@ -201,7 +209,7 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
         super.prepare(for: segue, sender: sender)
         let savedMemeTableController = segue.destination as! SavedMemeViewController
         
-        if segue.identifier == "savedMemeSegue" {
+        if segue.identifier == SegueIds.SAVED_MEME {
             savedMemeTableController.savedMemes = self.memes
             savedMemeTableController.datasource = SavedMemeDataSoure(savedMemes: self.memes)
         }
@@ -215,10 +223,15 @@ class MemeEditorController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     func setupTextFields (top:String?, bottom:String?) {
+        topTextField.delegate = self
+        bottomTextField.delegate = self
+        
         topTextField.defaultTextAttributes = Attributes.memeTextAttributes
         topTextField.textAlignment = .center
+        
         bottomTextField.defaultTextAttributes = Attributes.memeTextAttributes
         bottomTextField.textAlignment = .center
+        
         if let topText = top, let bottomText = bottom {
             topTextField.text = topText
             bottomTextField.text = bottomText

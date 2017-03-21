@@ -25,18 +25,8 @@ class SavedMemeViewController : UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        let mainViewController = segue.destination as! MemeEditorController
-        
-        if segue.identifier == "showSelectedMeme" {
-            if let cell = sender as? SavedMemeCell {
-                mainViewController.currentMeme = Meme(orignalImage: cell.memeImage,
-                                                      memedImage: nil,
-                                                      topText: cell.topText,
-                                                      bottomText: cell.bottomText)
-            }
-        }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dismiss(animated: true, completion: nil)
     }
     
 }

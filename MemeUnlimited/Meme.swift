@@ -9,3 +9,9 @@
 import Foundation
 import UIKit
 
+struct Meme {
+    let orignalImage: UIImage?
+    let memedImage: UIImage?
+    let topText: String?
+    let bottomText: String?
+}
